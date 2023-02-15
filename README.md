@@ -19,3 +19,4 @@ The bottom table and the timeline component will now populate with all metrics f
 * As the files are only read from the local DMA, the Low-Code app needs to be opened on the DMA where the script ran.
 * Currently no cleanup of the metric files is included, these need to be cleaned up manually.
 
+![image](https://user-images.githubusercontent.com/110403333/218707260-7598b7d8-f6de-46ab-9d4e-20cc35d1120d.png)
