@@ -32,6 +32,24 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{B446
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SLC-AS-ScriptPerformanceAnalyzer_1", "SLC-AS-ScriptPerformanceAnalyzer_1\SLC-AS-ScriptPerformanceAnalyzer_1.csproj", "{D097EB64-502D-4B44-9876-482AD344F256}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Publish Daily Script Performance Results", "Publish Daily Script Performance Results", "{4846392A-C81F-42DE-A490-5D3159C83FED}"
+	ProjectSection(SolutionItems) = preProject
+		Publish Daily Script Performance Results.xml = Publish Daily Script Performance Results.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{D1C0FDA2-106E-4ECF-9788-394901FBD8DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Publish Daily Script Performance Results_1", "Publish Daily Script Performance Results_1\Publish Daily Script Performance Results_1.csproj", "{9572F56E-6D8E-48D2-B0D6-A28F006C5114}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Archive Script Performance Results", "Archive Script Performance Results", "{1DA56173-4192-4A4E-9358-AE01FC614D55}"
+	ProjectSection(SolutionItems) = preProject
+		Archive Script Performance Results.xml = Archive Script Performance Results.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{D82E93C7-E82B-494E-84EF-0F44EB4866D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archive Script Performance Results_1", "Archive Script Performance Results_1\Archive Script Performance Results_1.csproj", "{8381CD9A-DB77-4D04-B770-F3D00D2A9A4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +60,14 @@ Global
 		{D097EB64-502D-4B44-9876-482AD344F256}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D097EB64-502D-4B44-9876-482AD344F256}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D097EB64-502D-4B44-9876-482AD344F256}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9572F56E-6D8E-48D2-B0D6-A28F006C5114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9572F56E-6D8E-48D2-B0D6-A28F006C5114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9572F56E-6D8E-48D2-B0D6-A28F006C5114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9572F56E-6D8E-48D2-B0D6-A28F006C5114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8381CD9A-DB77-4D04-B770-F3D00D2A9A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8381CD9A-DB77-4D04-B770-F3D00D2A9A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8381CD9A-DB77-4D04-B770-F3D00D2A9A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8381CD9A-DB77-4D04-B770-F3D00D2A9A4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +77,12 @@ Global
 		{0301A5CE-2559-4EB1-AEC3-F9F448E1207D} = {E3F363FF-7C52-49E0-9DBB-618B1753D240}
 		{B4464F18-DF63-4865-BD7B-B4901EE51E2C} = {0301A5CE-2559-4EB1-AEC3-F9F448E1207D}
 		{D097EB64-502D-4B44-9876-482AD344F256} = {B4464F18-DF63-4865-BD7B-B4901EE51E2C}
+		{4846392A-C81F-42DE-A490-5D3159C83FED} = {E3F363FF-7C52-49E0-9DBB-618B1753D240}
+		{D1C0FDA2-106E-4ECF-9788-394901FBD8DB} = {4846392A-C81F-42DE-A490-5D3159C83FED}
+		{9572F56E-6D8E-48D2-B0D6-A28F006C5114} = {D1C0FDA2-106E-4ECF-9788-394901FBD8DB}
+		{1DA56173-4192-4A4E-9358-AE01FC614D55} = {E3F363FF-7C52-49E0-9DBB-618B1753D240}
+		{D82E93C7-E82B-494E-84EF-0F44EB4866D5} = {1DA56173-4192-4A4E-9358-AE01FC614D55}
+		{8381CD9A-DB77-4D04-B770-F3D00D2A9A4D} = {D82E93C7-E82B-494E-84EF-0F44EB4866D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9481486A-C135-4019-BDE5-90E899B9A6FF}
