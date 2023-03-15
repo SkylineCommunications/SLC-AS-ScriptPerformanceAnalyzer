@@ -70,7 +70,7 @@ using Result = Skyline.DataMiner.Utils.ScriptPerformanceLogger.Result;
 /// </summary>
 public class Script
 {
-	private const string Path = @"C:\Skyline_Data\ScriptPerformanceLogger";
+	private const string DirectoryPath = @"C:\Skyline_Data\ScriptPerformanceLogger";
 
 	/// <summary>
 	/// The Script entry point.
@@ -78,7 +78,7 @@ public class Script
 	/// <param name="engine">Link with SLAutomation process.</param>
 	public void Run(Engine engine)
 	{
-		DirectoryInfo directoryInfo = Directory.CreateDirectory(Path);
+		DirectoryInfo directoryInfo = Directory.CreateDirectory(DirectoryPath);
 		DateTime threshold = DateTime.UtcNow.AddDays(-1);
 
 		QaPortalApiHelper qaPortalHelper = GetQaPortalApiHelper(engine);
@@ -86,45 +86,62 @@ public class Script
 		IEnumerable<FileInfo> dailyResults = directoryInfo.EnumerateFiles("*.json")
 			.Where(info => info.CreationTimeUtc > threshold);
 
-		var testReportsByTitle = new Dictionary<string, TestReport>();
+		IEnumerable<IGrouping<string, FileInfo>> resultsGroupedByTitle = dailyResults
+			.Where(info => info.Name.Contains('_'))
+			.GroupBy(GetTitle);
 
+		var testReportsByTitle = new Dictionary<string, TestReport>();
 		TestSystemInfo testSystemInfo = GetTestSystemInfo(engine);
-		foreach (FileInfo fileInfo in dailyResults)
+
+		foreach (IGrouping<string, FileInfo> grouping in resultsGroupedByTitle)
 		{
-			string title = fileInfo.Name.Split('_')[1];
+			string title = grouping.Key;
 			if (!testReportsByTitle.TryGetValue(title, out TestReport report))
 			{
 				report = new TestReport(GetTestInfo(engine, title), testSystemInfo);
 				testReportsByTitle.Add(title, report);
 			}
 
-			try
+			IEnumerable<IGrouping<string, MethodInvocation>> invocationsGroupedByFullName = GetInvocations(grouping)
+				.GroupBy(invocation => $"{invocation.ClassName}.{invocation.MethodName}");
+
+			foreach (IGrouping<string, MethodInvocation> invocations in invocationsGroupedByFullName)
 			{
-				var result = new JsonSerializer().Deserialize<Result>(new JsonTextReader(fileInfo.OpenText()));
-				foreach (MethodInvocation invocation in result.GetInvocationsRecursive())
-				{
-					var fullName = $"{invocation.ClassName}.{invocation.MethodName}";
+				string fullName = invocations.Key;
 
-					report.TryAddTestCase(new TestCaseReport(fullName, QAPortalAPI.Enums.Result.Unknown, String.Empty));
+				double[] executionTimes = invocations
+					.Select(invocation => invocation.ExecutionTime.TotalMilliseconds)
+					.ToArray();
 
-					var performanceReport = new PerformanceTestCaseReport(
-						fullName,
-						QAPortalAPI.Enums.Result.Unknown,
-						String.Empty,
+				var avgCase = new TestCaseReport($"{fullName} (avg)", QAPortalAPI.Enums.Result.Success, String.Empty);
+				report.TryAddTestCase(avgCase);
+				report.PerformanceTestCases.Add(
+					new PerformanceTestCaseReport(
+						avgCase.TestCaseName,
+						avgCase.TestCaseResult,
+						avgCase.TestCaseResultInfo,
 						ResultUnit.Millisecond,
-						invocation.ExecutionTime.TotalMilliseconds)
-					{
-						Date = invocation.TimeStamp,
-					};
+						executionTimes.Average()));
 
-					report.PerformanceTestCases.Add(performanceReport);
-				}
-			}
-			catch (SystemException)
-			{
-			}
-			catch (JsonException)
-			{
+				var minCase = new TestCaseReport($"{fullName} (min)", QAPortalAPI.Enums.Result.Success, String.Empty);
+				report.TryAddTestCase(minCase);
+				report.PerformanceTestCases.Add(
+					new PerformanceTestCaseReport(
+						minCase.TestCaseName,
+						minCase.TestCaseResult,
+						minCase.TestCaseResultInfo,
+						ResultUnit.Millisecond,
+						executionTimes.Min()));
+
+				var maxCase = new TestCaseReport($"{fullName} (max)", QAPortalAPI.Enums.Result.Success, String.Empty);
+				report.TryAddTestCase(maxCase);
+				report.PerformanceTestCases.Add(
+					new PerformanceTestCaseReport(
+						maxCase.TestCaseName,
+						maxCase.TestCaseResult,
+						maxCase.TestCaseResultInfo,
+						ResultUnit.Millisecond,
+						executionTimes.Max()));
 			}
 		}
 
@@ -134,11 +151,51 @@ public class Script
 		}
 	}
 
+	private static string GetTitle(FileInfo info)
+	{
+		return Path.GetFileNameWithoutExtension(info.Name.Substring(info.Name.IndexOf('_') + 1));
+	}
+
+	private static IEnumerable<MethodInvocation> GetInvocations(IEnumerable<FileInfo> files)
+	{
+		var jsonSerializer = new JsonSerializer();
+		foreach (FileInfo file in files)
+		{
+			Result result;
+			try
+			{
+				result = jsonSerializer.Deserialize<Result>(new JsonTextReader(file.OpenText()));
+			}
+			catch (SystemException)
+			{
+				continue;
+			}
+			catch (JsonException)
+			{
+				continue;
+			}
+
+			foreach (MethodInvocation invocation in result.GetInvocationsRecursive())
+			{
+				yield return invocation;
+			}
+		}
+	}
+
 	private static QaPortalApiHelper GetQaPortalApiHelper(IEngine engine)
 	{
 		string portalLink = engine.GetScriptParam(2).Value;
 		string clientId = engine.GetScriptParam(3).Value;
 		string apiKey = engine.GetScriptParam(4).Value;
+
+		if (portalLink == "." && clientId == "." && apiKey == ".")
+		{
+			return new QaPortalApiHelper(
+				engine.GenerateInformation,
+				"https://qaportal.skyline.local/api/public/results/addresult",
+				String.Empty,
+				String.Empty);
+		}
 
 		return portalLink.Contains("@")
 			? new QaPortalApiHelper(engine.GenerateInformation, portalLink, clientId, apiKey, engine.SendEmail)
