@@ -69,6 +69,7 @@ namespace Scripts
 
 		public OnArgumentsProcessedOutputArgs OnArgumentsProcessed(OnArgumentsProcessedInputArgs args)
 		{
+			// Datetimes coming from the app are passed in UTC format
 			_start = args.GetArgumentValue(_startArg);
 			_stop = args.GetArgumentValue(_stopArg);
 			return new OnArgumentsProcessedOutputArgs();
