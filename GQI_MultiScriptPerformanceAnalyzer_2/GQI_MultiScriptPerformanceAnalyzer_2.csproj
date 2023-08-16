@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D097EB64-502D-4B44-9876-482AD344F256}</ProjectGuid>
+    <ProjectGuid>{C64F5DB7-2910-447D-BE84-BAC1135D1708}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SLC_AS_ScriptPerformanceAnalyzer_1</RootNamespace>
-    <AssemblyName>SLC-AS-ScriptPerformanceAnalyzer_1</AssemblyName>
+    <RootNamespace>GQI_MultiScriptPerformanceAnalyzer_2</RootNamespace>
+    <AssemblyName>GQI_MultiScriptPerformanceAnalyzer_2</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>
@@ -24,7 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\Internal\Code Analysis\qaction-debug.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\SLC-AS-ScriptPerformanceAnalyzer_1.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\GQI_MultiScriptPerformanceAnalyzer_2.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,25 +34,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\Internal\Code Analysis\qaction-release.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Release\SLC-AS-ScriptPerformanceAnalyzer_1.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\GQI_MultiScriptPerformanceAnalyzer_2.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <AdditionalFiles Include="stylecop.json" />
-    <Content Include=".editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="MethodInvocation.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Result.cs" />
-    <Compile Include="SLC-AS-ScriptPerformanceAnalyzer_1.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.2</Version>
+      <Version>11.0.2</Version>
     </PackageReference>
     <PackageReference Include="Skyline.DataMiner.Dev.Automation">
       <Version>10.3.8</Version>
@@ -66,10 +55,19 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <AdditionalFiles Include="stylecop.json" />
+    <Content Include=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GQI_MultiScriptPerformanceAnalyzer_2.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties DisLinkedXmlFile="..\SLC-AS-ScriptPerformanceAnalyzer.xml" DisProjectType="automationScriptProject" DisLinkId="1" />
+      <UserProperties DisLinkedXmlFile="..\GQI_MultiScriptPerformanceAnalyzer.xml" DisProjectType="automationScriptProject" DisLinkId="2" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

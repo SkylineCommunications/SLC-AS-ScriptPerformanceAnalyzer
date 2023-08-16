@@ -1,0 +1,24 @@
+<DMSScript options="272" xmlns="http://www.skyline.be/automation">
+  <Name>GQI_MultiScriptPerformanceAnalyzer</Name>
+  <Description>
+  </Description>
+  <Type>Automation</Type>
+  <Author>SKYLINE2\Matthijs</Author>
+  <CheckSets>FALSE</CheckSets>
+  <Folder>GQI</Folder>
+  <Protocols>
+  </Protocols>
+  <Memory>
+  </Memory>
+  <Parameters>
+  </Parameters>
+  <Script>
+    <Exe id="2" type="csharp">
+      <Value><![CDATA[[Project:GQI_MultiScriptPerformanceAnalyzer_2]]]></Value>
+      <Param type="preCompile">true</Param>
+      <Param type="libraryName">GQI_MultiScriptPerformanceAnalyzer</Param>
+      <Message>
+      </Message>
+    </Exe>
+  </Script>
+</DMSScript>

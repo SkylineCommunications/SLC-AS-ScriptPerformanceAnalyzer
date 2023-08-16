@@ -9,6 +9,7 @@ using Skyline.DataMiner.Utils.ScriptPerformanceLogger;
 public class MyDataSource : IGQIDataSource, IGQIInputArguments, IGQIOnInit
 {
 	private GQIStringArgument _filePath = new GQIStringArgument("File Path") { IsRequired = true };
+	
 	private string filePath;
 
 	public GQIColumn[] GetColumns()
