@@ -17,28 +17,31 @@ namespace Scripts
 	{ 
 		private GQIDateTimeArgument _startArg = new GQIDateTimeArgument("Start") { IsRequired = true };
 		private GQIDateTimeArgument _stopArg = new GQIDateTimeArgument("Stop") { IsRequired = true };
+		private GQIStringArgument _methodRegexFilterArgs = new GQIStringArgument("Method Filter") { IsRequired = false };
 
 		private string folderPath = @"C:\Skyline_Data\ScriptPerformanceLogger";
 		private DateTime _start;
 		private DateTime _stop;
+		private string[] _methodRegexFilter;
 
 		public GQIColumn[] GetColumns()
 		{
 			List<GQIColumn> columns = new List<GQIColumn>
-		{
-			new GQIStringColumn("Class Name"),
-			new GQIStringColumn("Method Name"),
-			new GQIDateTimeColumn("Start"),
-			new GQIDateTimeColumn("End"),
-			new GQIDoubleColumn("Execution Time"),
-			new GQIIntColumn("Sub Method Level"),
-		};
+			{
+				new GQIStringColumn("Class Name"),
+				new GQIStringColumn("Method Name"),
+				new GQIDateTimeColumn("Start"),
+				new GQIDateTimeColumn("End"),
+				new GQIDoubleColumn("Execution Time"),
+				new GQIIntColumn("Sub Method Level"),
+			};
+
 			return columns.ToArray();
 		}
 
 		public GQIArgument[] GetInputArguments()
 		{
-			return new GQIArgument[] { _startArg, _stopArg };
+			return new GQIArgument[] { _startArg, _stopArg, _methodRegexFilterArgs };
 		}
 
 		public GQIPage GetNextPage(GetNextPageInputArgs args)
@@ -72,12 +75,28 @@ namespace Scripts
 			// Datetimes coming from the app are passed in UTC format
 			_start = args.GetArgumentValue(_startArg);
 			_stop = args.GetArgumentValue(_stopArg);
+
+			var methods = args.GetArgumentValue(_methodRegexFilterArgs);
+			_methodRegexFilter = GetValuesFromInputParameter(methods);
+
 			return new OnArgumentsProcessedOutputArgs();
 		}
 
 		public OnInitOutputArgs OnInit(OnInitInputArgs args)
 		{
 			return new OnInitOutputArgs();
+		}
+
+		private static string[] GetValuesFromInputParameter(string rawValue)
+		{
+			try
+			{
+				return JsonConvert.DeserializeObject<string[]>(rawValue);
+			}
+			catch (Exception)
+			{
+				return new string[0];
+			}
 		}
 
 		private List<Result> GetResults(DateTime start, DateTime stop)
@@ -90,24 +109,17 @@ namespace Scripts
 			// Iterate through each file and check its creation time
 			foreach (string file in files)
 			{
-				try
-				{
-					FileInfo fileInfo = new FileInfo(file);
-					DateTime creationTime = fileInfo.CreationTimeUtc;
+				FileInfo fileInfo = new FileInfo(file);
+				DateTime creationTime = fileInfo.CreationTimeUtc;
 
-					// Compare the file's creation time with the start time
-					if (creationTime >= start && creationTime < stop)
-					{
-						// File was created within the last 24 hours
-						string filecontent = File.ReadAllText(file);
-
-						Result result = JsonConvert.DeserializeObject<Result>(filecontent);
-						results.Add(result);
-					}
-				}
-				catch (Exception e)
+				// Compare the file's creation time with the start time
+				if (creationTime >= start && creationTime < stop)
 				{
-					throw e;
+					// File was created within the last 24 hours
+					string filecontent = File.ReadAllText(file);
+
+					Result result = JsonConvert.DeserializeObject<Result>(filecontent);
+					results.Add(result);
 				}
 			}
 
@@ -116,15 +128,20 @@ namespace Scripts
 
 		private void ProcessMethodInvocation(List<GQIRow> rows, MethodInvocation methodInvocation, int level)
 		{
-			List<GQICell> cells = new List<GQICell>();
-			cells.Add(new GQICell() { Value = methodInvocation.ClassName });
-			cells.Add(new GQICell() { Value = methodInvocation.MethodName });
-			cells.Add(new GQICell() { Value = DateTime.SpecifyKind(methodInvocation.TimeStamp, DateTimeKind.Utc) });
-			cells.Add(new GQICell() { Value = DateTime.SpecifyKind(methodInvocation.TimeStamp + methodInvocation.ExecutionTime, DateTimeKind.Utc) });
-			cells.Add(new GQICell() { Value = methodInvocation.ExecutionTime.TotalSeconds, DisplayValue = methodInvocation.ExecutionTime.TotalSeconds + " s" });
-			cells.Add(new GQICell() { Value = level });
+			var cells = new List<GQICell>
+			{
+				new GQICell { Value = methodInvocation.ClassName },
+				new GQICell { Value = methodInvocation.MethodName },
+				new GQICell { Value = DateTime.SpecifyKind(methodInvocation.TimeStamp, DateTimeKind.Utc) },
+				new GQICell { Value = DateTime.SpecifyKind(methodInvocation.TimeStamp + methodInvocation.ExecutionTime, DateTimeKind.Utc) },
+				new GQICell { Value = methodInvocation.ExecutionTime.TotalMilliseconds, DisplayValue = methodInvocation.ExecutionTime.TotalMilliseconds + " ms" },
+				new GQICell { Value = level },
+			};
 
-			rows.Add(new GQIRow(cells.ToArray()));
+			if (_methodRegexFilter.Any() && _methodRegexFilter.Contains(methodInvocation.MethodName))
+			{
+				rows.Add(new GQIRow(cells.ToArray()));
+			}
 
 			foreach (var childInvocation in methodInvocation.ChildInvocations)
 			{
