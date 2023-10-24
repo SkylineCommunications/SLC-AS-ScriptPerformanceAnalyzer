@@ -26,7 +26,7 @@ namespace Scripts
 
 		public GQIColumn[] GetColumns()
 		{
-			List<GQIColumn> columns = new List<GQIColumn>
+			return new GQIColumn[]
 			{
 				new GQIStringColumn("Class Name"),
 				new GQIStringColumn("Method Name"),
@@ -35,8 +35,6 @@ namespace Scripts
 				new GQIDoubleColumn("Execution Time"),
 				new GQIIntColumn("Sub Method Level"),
 			};
-
-			return columns.ToArray();
 		}
 
 		public GQIArgument[] GetInputArguments()
@@ -48,14 +46,12 @@ namespace Scripts
 		{
 			var rows = new List<GQIRow>();
 
-			var results = ResultFileLoader.LoadFiles(_start, _stop);
+			var methodInvocations = ResultFileLoader.LoadFiles(_start, _stop)
+				.SelectMany(r => r.MethodInvocations);
 
-			foreach (var result in results)
+			foreach (var methodInvocation in methodInvocations)
 			{
-				foreach (var methodInvocation in result.MethodInvocations)
-				{
-					ProcessMethodInvocation(rows, methodInvocation, 0);
-				}
+				ProcessMethodInvocation(rows, methodInvocation, 0);
 			}
 
 			return new GQIPage(rows.ToArray())
