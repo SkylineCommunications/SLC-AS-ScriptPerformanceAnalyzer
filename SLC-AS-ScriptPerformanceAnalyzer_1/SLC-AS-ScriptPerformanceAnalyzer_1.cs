@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json;
+
 using Skyline.DataMiner.Analytics.GenericInterface;
 using Skyline.DataMiner.Utils.ScriptPerformanceLogger;
 
@@ -9,7 +8,7 @@ using Skyline.DataMiner.Utils.ScriptPerformanceLogger;
 public class MyDataSource : IGQIDataSource, IGQIInputArguments, IGQIOnInit
 {
 	private GQIStringArgument _filePath = new GQIStringArgument("File Path") { IsRequired = true };
-	
+
 	private string filePath;
 
 	public GQIColumn[] GetColumns()
@@ -37,9 +36,7 @@ public class MyDataSource : IGQIDataSource, IGQIInputArguments, IGQIOnInit
 
 		try
 		{
-			string file = File.ReadAllText(filePath);
-
-			Result result = JsonConvert.DeserializeObject<Result>(file);
+			var result = ResultFileLoader.LoadFile(filePath);
 
 			foreach (var methodInvocation in result.MethodInvocations)
 			{
@@ -70,13 +67,15 @@ public class MyDataSource : IGQIDataSource, IGQIInputArguments, IGQIOnInit
 
 	private void ProcessMethodInvocation(List<GQIRow> rows, MethodInvocation methodInvocation, int level)
 	{
-		List<GQICell> cells = new List<GQICell>();
-		cells.Add(new GQICell() { Value = methodInvocation.ClassName });
-		cells.Add(new GQICell() { Value = methodInvocation.MethodName });
-		cells.Add(new GQICell() { Value = methodInvocation.TimeStamp });
-		cells.Add(new GQICell() { Value = methodInvocation.TimeStamp + methodInvocation.ExecutionTime });
-		cells.Add(new GQICell() { Value = methodInvocation.ExecutionTime.TotalSeconds, DisplayValue = methodInvocation.ExecutionTime.TotalSeconds + " s" });
-		cells.Add(new GQICell() { Value = level });
+		var cells = new List<GQICell>
+		{
+			new GQICell { Value = methodInvocation.ClassName },
+			new GQICell { Value = methodInvocation.MethodName },
+			new GQICell { Value = methodInvocation.TimeStamp },
+			new GQICell { Value = methodInvocation.TimeStamp + methodInvocation.ExecutionTime },
+			new GQICell { Value = methodInvocation.ExecutionTime.TotalSeconds, DisplayValue = methodInvocation.ExecutionTime.TotalSeconds + " s" },
+			new GQICell { Value = level },
+		};
 
 		rows.Add(new GQIRow(cells.ToArray()));
 

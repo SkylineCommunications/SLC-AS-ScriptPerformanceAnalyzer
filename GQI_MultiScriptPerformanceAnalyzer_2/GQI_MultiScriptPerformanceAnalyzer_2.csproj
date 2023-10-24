@@ -41,7 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.2</Version>
+      <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="Skyline.DataMiner.Dev.Automation">
       <Version>10.3.8</Version>
@@ -64,10 +64,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GQI_MultiScriptPerformanceAnalyzer_2.cs" />
   </ItemGroup>
+  <Import Project="..\SharedCode\SharedCode.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties DisLinkedXmlFile="..\GQI_MultiScriptPerformanceAnalyzer.xml" DisProjectType="automationScriptProject" DisLinkId="2" />
+      <UserProperties DisLinkId="2" DisProjectType="automationScriptProject" DisLinkedXmlFile="..\GQI_MultiScriptPerformanceAnalyzer.xml" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

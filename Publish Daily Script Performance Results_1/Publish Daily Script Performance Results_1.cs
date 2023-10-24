@@ -70,15 +70,13 @@ using Result = Skyline.DataMiner.Utils.ScriptPerformanceLogger.Result;
 /// </summary>
 public class Script
 {
-	private const string DirectoryPath = @"C:\Skyline_Data\ScriptPerformanceLogger";
-
 	/// <summary>
 	/// The Script entry point.
 	/// </summary>
 	/// <param name="engine">Link with SLAutomation process.</param>
 	public void Run(Engine engine)
 	{
-		DirectoryInfo directoryInfo = Directory.CreateDirectory(DirectoryPath);
+		DirectoryInfo directoryInfo = Directory.CreateDirectory(Paths.ScriptPerformanceLoggerPath);
 		DateTime threshold = DateTime.UtcNow.AddDays(-1);
 
 		QaPortalApiHelper qaPortalHelper = GetQaPortalApiHelper(engine);
@@ -102,7 +100,8 @@ public class Script
 				testReportsByTitle.Add(title, report);
 			}
 
-			IEnumerable<IGrouping<string, MethodInvocation>> invocationsGroupedByFullName = GetInvocations(grouping)
+			var invocationsGroupedByFullName = ResultFileLoader.LoadFiles(grouping)
+				.SelectMany(x => x.GetInvocationsRecursive())
 				.GroupBy(invocation => $"{invocation.ClassName}.{invocation.MethodName}");
 
 			foreach (IGrouping<string, MethodInvocation> invocations in invocationsGroupedByFullName)
@@ -154,32 +153,6 @@ public class Script
 	private static string GetTitle(FileInfo info)
 	{
 		return Path.GetFileNameWithoutExtension(info.Name.Substring(info.Name.IndexOf('_') + 1));
-	}
-
-	private static IEnumerable<MethodInvocation> GetInvocations(IEnumerable<FileInfo> files)
-	{
-		var jsonSerializer = new JsonSerializer();
-		foreach (FileInfo file in files)
-		{
-			Result result;
-			try
-			{
-				result = jsonSerializer.Deserialize<Result>(new JsonTextReader(file.OpenText()));
-			}
-			catch (SystemException)
-			{
-				continue;
-			}
-			catch (JsonException)
-			{
-				continue;
-			}
-
-			foreach (MethodInvocation invocation in result.GetInvocationsRecursive())
-			{
-				yield return invocation;
-			}
-		}
 	}
 
 	private static QaPortalApiHelper GetQaPortalApiHelper(IEngine engine)

@@ -57,13 +57,14 @@ using System.Linq;
 using System.Security;
 
 using Skyline.DataMiner.Automation;
+using Skyline.DataMiner.Utils.ScriptPerformanceLogger;
 
 /// <summary>
 /// DataMiner Script Class.
 /// </summary>
 public class Script
 {
-	private const string ArchivePath = @"C:\Skyline_Data\ScriptPerformanceLogger\Archive.zip";
+	private static readonly string ArchivePath = Path.Combine(Paths.ScriptPerformanceLoggerPath, "Archive.zip");
 
 	/// <summary>
 	/// The Script entry point.

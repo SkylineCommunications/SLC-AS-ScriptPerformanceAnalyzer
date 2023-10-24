@@ -59,6 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{07B3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GQI_MultiScriptPerformanceAnalyzer_2", "GQI_MultiScriptPerformanceAnalyzer_2\GQI_MultiScriptPerformanceAnalyzer_2.csproj", "{C64F5DB7-2910-447D-BE84-BAC1135D1708}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedCode", "SharedCode\SharedCode.shproj", "{BAD2A381-B234-4615-97FC-2DF0B39E81A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -102,5 +104,12 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9481486A-C135-4019-BDE5-90E899B9A6FF}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedCode\SharedCode.projitems*{8381cd9a-db77-4d04-b770-f3d00d2a9a4d}*SharedItemsImports = 4
+		SharedCode\SharedCode.projitems*{9572f56e-6d8e-48d2-b0d6-a28f006c5114}*SharedItemsImports = 4
+		SharedCode\SharedCode.projitems*{bad2a381-b234-4615-97fc-2df0b39e81a4}*SharedItemsImports = 13
+		SharedCode\SharedCode.projitems*{c64f5db7-2910-447d-be84-bac1135d1708}*SharedItemsImports = 4
+		SharedCode\SharedCode.projitems*{d097eb64-502d-4b44-9876-482ad344f256}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
